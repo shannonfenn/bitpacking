@@ -1,0 +1,12 @@
+.cache/
+build/
+*.egg-info/
+*_build.log
+*.c
+*.cpp
+*.so
+py*.cpp
+*.pyc
+*.html
+*.pytest.restart
+*.sublime-workspace
