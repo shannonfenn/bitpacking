@@ -152,7 +152,7 @@ cpdef packed_type_t generate_end_mask(N):
     return end_mask
 
 
-cpdef partition_packed(packed_type_t[:, :] matrix, size_t N, size_t[:] indices):
+cpdef partition(packed_type_t[:, :] matrix, size_t N, size_t[:] indices):
     cdef:
         packed_type_t mask, bit
         packed_type_t[:, :] M, M_trg, M_test
@@ -196,7 +196,7 @@ cpdef partition_packed(packed_type_t[:, :] matrix, size_t N, size_t[:] indices):
     return M1, M2
 
 
-cpdef sample_packed(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=False):
+cpdef sample(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=False):
     cdef packed_type_t mask
     cdef packed_type_t[:, :] sample
     cdef size_t Nr, Nw, Ns, r, w, b, sw, sb, cols, index

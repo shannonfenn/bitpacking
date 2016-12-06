@@ -149,7 +149,7 @@ def expected_partition(M, Ne, indices):
     return Msp, Mtp
 
 
-def test_partition_packed(single_matrix):
+def test_partition(single_matrix):
     Ne = single_matrix.shape[0]
 
     sample_size = np.random.randint(1, Ne)
@@ -162,13 +162,13 @@ def test_partition_packed(single_matrix):
 
     packed = pk.packmat(single_matrix)
 
-    actual_trg, actual_test = pk.partition_packed(packed, Ne, sample)
+    actual_trg, actual_test = pk.partition(packed, Ne, sample)
 
     np.testing.assert_array_equal(actual_trg, expected_trg)
     np.testing.assert_array_equal(actual_test, expected_test)
 
 
-def test_sample_packed(single_matrix):
+def test_sample(single_matrix):
     Ne = single_matrix.shape[0]
 
     sample_size = np.random.randint(1, Ne)
@@ -181,8 +181,8 @@ def test_sample_packed(single_matrix):
 
     packed = pk.packmat(single_matrix)
 
-    actual_trg = pk.sample_packed(packed, Ne, sample, invert=False)
-    actual_test = pk.sample_packed(packed, Ne, sample, invert=True)
+    actual_trg = pk.sample(packed, Ne, sample, invert=False)
+    actual_test = pk.sample(packed, Ne, sample, invert=True)
 
     np.testing.assert_array_equal(actual_trg, expected_trg)
     np.testing.assert_array_equal(actual_test, expected_test)

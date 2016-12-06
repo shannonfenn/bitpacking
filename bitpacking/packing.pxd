@@ -6,7 +6,7 @@ cimport numpy as np
 ctypedef np.uint64_t packed_type_t
 # binary function type
 ctypedef packed_type_t (*f_type)(packed_type_t, packed_type_t)
-cdef f_type* all_functions
+cdef f_type* function_list
 
 
 cdef size_t PACKED_SIZE
@@ -24,7 +24,7 @@ cpdef unpackvec(packed_type_t[:] packed_vec, size_t N)
 
 cpdef packed_type_t generate_end_mask(N)
 
-cpdef partition_packed(packed_type_t[:, :] matrix, size_t N, size_t[:] indices)
-cpdef sample_packed(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=*)
+cpdef partition(packed_type_t[:, :] matrix, size_t N, size_t[:] indices)
+cpdef sample(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=*)
 
 
