@@ -6,10 +6,7 @@ from pytest import fixture, fail
 from itertools import zip_longest
 
 
-# @fixture(params=randint(low=2, high=100, size=(100, 2)))
-# def shape(request):
-#     return request.param
-@fixture(params=randint(low=2, high=6, size=(100, 2)))
+@fixture(params=randint(low=2, high=100, size=(100, 2)))
 def shape(request):
     return request.param
 
@@ -162,7 +159,7 @@ def test_partition(single_matrix):
 
     packed = pk.packmat(single_matrix)
 
-    actual_trg, actual_test = pk.partition(packed, Ne, sample)
+    actual_trg, actual_test = pk.partition_columns(packed, Ne, sample)
 
     np.testing.assert_array_equal(actual_trg, expected_trg)
     np.testing.assert_array_equal(actual_test, expected_test)
@@ -181,8 +178,8 @@ def test_sample(single_matrix):
 
     packed = pk.packmat(single_matrix)
 
-    actual_trg = pk.sample(packed, Ne, sample, invert=False)
-    actual_test = pk.sample(packed, Ne, sample, invert=True)
+    actual_trg = pk.sample_columns(packed, Ne, sample, invert=False)
+    actual_test = pk.sample_columns(packed, Ne, sample, invert=True)
 
     np.testing.assert_array_equal(actual_trg, expected_trg)
     np.testing.assert_array_equal(actual_test, expected_test)

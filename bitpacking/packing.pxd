@@ -24,7 +24,7 @@ cpdef unpackvec(packed_type_t[:] packed_vec, size_t N)
 
 cpdef packed_type_t generate_end_mask(N)
 
-cpdef partition(packed_type_t[:, :] matrix, size_t N, size_t[:] indices)
-cpdef sample(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=*)
+cpdef partition_columns(packed_type_t[:, :] matrix, size_t N, indices)
+cpdef sample_columns(packed_type_t[:, :] matrix, size_t N, indices, bint invert=*)
 
 

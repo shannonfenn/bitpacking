@@ -152,12 +152,11 @@ cpdef packed_type_t generate_end_mask(N):
     return end_mask
 
 
-cpdef partition(packed_type_t[:, :] matrix, size_t N, size_t[:] indices):
+cpdef partition_columns(packed_type_t[:, :] matrix, size_t N, indices):
     cdef:
-        packed_type_t mask, bit
-        packed_type_t[:, :] M, M_trg, M_test
-        size_t Nr, Nw, Nw1, Nw2, N1, r, w
-        size_t b, b1, b2, w1, w2
+        packed_type_t mask, bit_value
+        packed_type_t[:, :] M, M1, M2
+        size_t Nr, Nw, Nw1, Nw2, N1, r, w, b, b1, b2, w1, w2
 
     N1 = indices.shape[0]
     Nr = matrix.shape[0]
@@ -178,17 +177,17 @@ cpdef partition(packed_type_t[:, :] matrix, size_t N, size_t[:] indices):
             mask = 1
             for b in range(PACKED_SIZE):
                 # get the bit from the original matrix
-                bit = (matrix[r, w] & mask) >> b
+                bit_value = (matrix[r, w] & mask) >> b
                 # if this bit of this word is in the sample
                 if b + w * PACKED_SIZE in indices:
                     # insert into training sample at the next position
-                    M1[r, w1] += bit << b1
+                    M1[r, w1] += bit_value << b1
                     # increment training sample word and bit indices
                     b1 = (b1 + 1) % PACKED_SIZE
                     w1 += b1 == 0
                 else:
                     # insert into test sample at the next position
-                    M2[r, w2] += bit << b2
+                    M2[r, w2] += bit_value << b2
                     # increment test sample word and bit indices
                     b2 = (b2 + 1) % PACKED_SIZE
                     w2 += b2 == 0
@@ -196,18 +195,19 @@ cpdef partition(packed_type_t[:, :] matrix, size_t N, size_t[:] indices):
     return M1, M2
 
 
-cpdef sample(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=False):
-    cdef packed_type_t mask
+cpdef sample_columns(packed_type_t[:, :] matrix, size_t N, indices, bint invert=False):
+    cdef packed_type_t mask, bit_value
     cdef packed_type_t[:, :] sample
-    cdef size_t Nr, Nw, Ns, r, w, b, sw, sb, cols, index
+    cdef size_t Nr, Nw, Nws, Nsamp, r, w, b, sw, sb, cols, index
 
     Nr = matrix.shape[0]
-    Ns = indices.shape[0]
+    Nsamp = indices.shape[0]
 
     if invert:
         # sample matrix
-        Nw = int(ceil((N - Ns) / <double>PACKED_SIZE))
-        sample = np.zeros((Nr, Nw), dtype=packed_type)
+        Nw = matrix.shape[1]
+        Nws = int(ceil((N - Nsamp) / <double>PACKED_SIZE))
+        sample = np.zeros((Nr, Nws), dtype=packed_type)
 
         # word and bit positions for sample
         sb = sw = 0
@@ -218,16 +218,16 @@ cpdef sample(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=Fal
                 if w * PACKED_SIZE + b not in indices:
                     # get the bit
                     for r in range(Nr):
-                        bit = (matrix[r, w] & mask) >> b
+                        bit_value = (matrix[r, w] & mask) >> b
                         # insert into the sample at the next position
-                        sample[r, sw] += bit << sb
+                        sample[r, sw] += bit_value << sb
                     # increment sample word and bit indices
                     sb = (sb + 1) % PACKED_SIZE
                     sw += sb == 0
                 mask <<= 1
     else:
-        Nw = int(ceil(Ns / <double>PACKED_SIZE))
-        sample = np.zeros((Nr, Nw), dtype=packed_type)
+        Nws = int(ceil(Nsamp / <double>PACKED_SIZE))
+        sample = np.zeros((Nr, Nws), dtype=packed_type)
         
         # word and bit positions for sample
         sw = sb = 0
@@ -239,9 +239,9 @@ cpdef sample(packed_type_t[:, :] matrix, size_t N, size_t[:] indices, invert=Fal
             mask = <packed_type_t>1 << b
             for r in range(Nr):
                 # get the bit
-                bit = (matrix[r, w] & mask) >> b
+                bit_value = (matrix[r, w] & mask) >> b
                 # insert into into the sample at the next position
-                sample[r, sw] += (bit << sb)
+                sample[r, sw] += (bit_value << sb)
             # increment word and bit indices
             sb = (sb + 1) % PACKED_SIZE
             sw += sb == 0
