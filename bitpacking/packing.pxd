@@ -16,7 +16,7 @@ cdef packed_type_t PACKED_HIGH_BIT_SET
 
 cpdef setbits(packed_type_t[:] vec, set positions)
 
-cpdef pack_chunk(packed_type_t[:] mat, packed_type_t[:, :] packed, size_t N, size_t column)
+cpdef pack_chunk(packed_type_t[:] mat, packed_type_t[:, :] packed, size_t col)
 cpdef packmat(np.uint8_t[:, :] mat, bint transpose=*)
 
 cpdef unpackmat(packed_type_t[:, :] packed_mat, size_t N, bint transpose=*)
@@ -26,5 +26,3 @@ cpdef packed_type_t generate_end_mask(N)
 
 cpdef partition_columns(packed_type_t[:, :] matrix, size_t N, indices)
 cpdef sample_columns(packed_type_t[:, :] matrix, size_t N, indices, bint invert=*)
-
-

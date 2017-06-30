@@ -24,19 +24,19 @@ cpdef setbits(packed_type_t[:] vec, set positions):
         vec[chunk] |= (<packed_type_t>1) << bit
 
 
-cpdef pack_chunk(packed_type_t[:] mat, packed_type_t[:, :] packed, size_t N, size_t column):
-    ''' This method assumed mat.shape[0] == PACKED_SIZE.'''
+cpdef pack_chunk(packed_type_t[:] mat, packed_type_t[:, :] packed, size_t col):
+    ''' Assumes mat.shape[0] == PACKED_SIZE.'''
     cdef:
-        size_t i, bit
+        size_t row, bit
         packed_type_t chunk, mask
     # build packed matrix
     mask = 1
-    for i in range(N):
+    for row in range(packed.shape[0]):
         chunk = 0
         for bit in range(PACKED_SIZE):
-            chunk |= (((mat[bit] & mask) >> i) << bit)
+            chunk |= (((mat[bit] & mask) >> row) << bit)
         mask <<= 1
-        packed[i, column] = chunk
+        packed[row, col] = chunk
 
 
 cpdef packmat(np.uint8_t[:, :] mat, bint transpose=True):

@@ -53,7 +53,7 @@ def test_pack_chunk(chunk_instance):
     No = chunk_instance[0]
     M = chunk_instance[1]
     M_p = np.zeros((No, 1), dtype=pk.packed_type)
-    pk.pack_chunk(M, M_p, No, 0)
+    pk.pack_chunk(M, M_p, 0)
 
     check_equal_transposed(M, M_p[:, 0])
 
@@ -65,7 +65,7 @@ def test_pack_chunk_offset(chunk_instance, chunk_offset_instance):
     offset = chunk_offset_instance[1]
 
     M_p = np.zeros((No, cols), dtype=pk.packed_type)
-    pk.pack_chunk(M, M_p, No, offset)
+    pk.pack_chunk(M, M_p, offset)
     check_equal_transposed(M, M_p[:, offset])
 
 
