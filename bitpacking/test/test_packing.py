@@ -183,3 +183,19 @@ def test_sample(single_matrix):
 
     np.testing.assert_array_equal(actual_trg, expected_trg)
     np.testing.assert_array_equal(actual_test, expected_test)
+
+
+def test_transpose(single_matrix):
+    N, _ = single_matrix.shape
+    Mp = pk.packmat(single_matrix, transpose=True)
+    expected = pk.packmat(single_matrix, transpose=False)
+    actual = pk.transpose(Mp, N)
+    assert_array_equal(expected, actual)
+
+
+def test_transpose_invertibility(single_matrix):
+    N1, N2 = single_matrix.shape
+    Mp = pk.packmat(single_matrix)
+    MpT = pk.transpose(Mp, N1)
+    Mp2 = pk.transpose(MpT, N2)
+    assert_array_equal(Mp, Mp2)

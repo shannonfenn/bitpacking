@@ -136,7 +136,7 @@ cpdef packed_type_t generate_end_mask(N):
     cdef:
         packed_type_t end_mask, shift
         size_t bits, b, bits_to_remain
-    
+
     end_mask = PACKED_ALL_SET
     bits_to_remain = N % PACKED_SIZE
 
@@ -228,7 +228,7 @@ cpdef sample_columns(packed_type_t[:, :] matrix, size_t N, indices, bint invert=
     else:
         Nws = int(ceil(Nsamp / <double>PACKED_SIZE))
         sample = np.zeros((Nr, Nws), dtype=packed_type)
-        
+
         # word and bit positions for sample
         sw = sb = 0
         # for each index in sample
@@ -246,6 +246,34 @@ cpdef sample_columns(packed_type_t[:, :] matrix, size_t N, indices, bint invert=
             sb = (sb + 1) % PACKED_SIZE
             sw += sb == 0
     return sample
+
+
+cpdef transpose(packed_type_t[:, :] matrix, size_t N):
+    cdef:
+        size_t Nr1, Nc1, Nr2, Nc2
+        size_t r1, c1, r2, c2, bit1, bit2
+        packed_type_t mask
+        packed_type_t[:, :] transposed
+
+    Nr1, Nc1 = matrix.shape[0], matrix.shape[1]
+    Nr2 = N
+    Nc2 = int(ceil(Nr1 / <double>PACKED_SIZE))
+
+    transposed = np.zeros((Nr2, Nc2), dtype=packed_type)
+
+    # build packed matrix
+    for r2 in range(Nr2):
+        c1 = r2 // PACKED_SIZE
+        bit1 = r2 % PACKED_SIZE
+        mask = (<packed_type_t>1) << bit1
+        # looping only over existing rows
+        for r1 in range(Nr1):
+            c2 = r1 // PACKED_SIZE
+            bit2 = r1 % PACKED_SIZE
+
+            transposed[r2, c2] |= ((matrix[r1, c1] & mask) >> bit1 << bit2)
+
+    return np.asarray(transposed)
 
 
 function_list = [__f0, __f1, __f2, __f3, __f4, __f5, __f6, __f7,

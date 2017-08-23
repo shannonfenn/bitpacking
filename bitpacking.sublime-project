@@ -1,8 +1,4 @@
 {
-	"SublimeLinter":
-	{
-		"@python": "3.5"
-	},
 	"build_systems":
 	[
 		{

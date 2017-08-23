@@ -26,3 +26,5 @@ cpdef packed_type_t generate_end_mask(N)
 
 cpdef partition_columns(packed_type_t[:, :] matrix, size_t N, indices)
 cpdef sample_columns(packed_type_t[:, :] matrix, size_t N, indices, bint invert=*)
+
+cpdef transpose(packed_type_t[:, :] matrix, size_t N)
