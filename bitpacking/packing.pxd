@@ -4,11 +4,6 @@ cimport numpy as np
 
 
 ctypedef np.uint64_t packed_type_t
-# binary function type
-ctypedef packed_type_t (*f_type)(packed_type_t, packed_type_t)
-cdef f_type* function_list
-
-
 cdef size_t PACKED_SIZE
 cdef packed_type_t PACKED_ALL_SET
 cdef packed_type_t PACKED_HIGH_BIT_SET

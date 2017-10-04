@@ -49,7 +49,7 @@ cpdef packmat(np.uint8_t[:, :] mat, bint transpose=True):
     Nr, Nc = mat.shape[0], mat.shape[1]
     if transpose:
         num_chunks = int(ceil(Nr / <double>PACKED_SIZE))
-        # pad rows with zeros to next multiple of PACKED_SIZE 
+        # pad rows with zeros to next multiple of PACKED_SIZE
         padded = np.zeros((num_chunks * PACKED_SIZE, Nc), dtype=np.uint8)
         padded[:Nr, :] = mat
         # build packed matrix
@@ -62,7 +62,7 @@ cpdef packmat(np.uint8_t[:, :] mat, bint transpose=True):
                 packed[i, ch] = chunk
     else:
         num_chunks = int(ceil(Nc / <double>PACKED_SIZE))
-        # pad rows with zeros to next multiple of PACKED_SIZE 
+        # pad rows with zeros to next multiple of PACKED_SIZE
         padded = np.zeros((Nr, num_chunks * PACKED_SIZE), dtype=np.uint8)
         padded[:, :Nc] = mat
         # build packed matrix
@@ -274,24 +274,3 @@ cpdef transpose(packed_type_t[:, :] matrix, size_t N):
             transposed[r2, c2] |= ((matrix[r1, c1] & mask) >> bit1 << bit2)
 
     return np.asarray(transposed)
-
-
-function_list = [__f0, __f1, __f2, __f3, __f4, __f5, __f6, __f7,
-                 __f8, __f9, __f10, __f11, __f12, __f13, __f14, __f15,]
-
-cdef packed_type_t __f0(packed_type_t x, packed_type_t y):  return 0
-cdef packed_type_t __f1(packed_type_t x, packed_type_t y):  return ~(x|y)   # NOR
-cdef packed_type_t __f2(packed_type_t x, packed_type_t y):  return ~x&y
-cdef packed_type_t __f3(packed_type_t x, packed_type_t y):  return ~x
-cdef packed_type_t __f4(packed_type_t x, packed_type_t y):  return x&~y
-cdef packed_type_t __f5(packed_type_t x, packed_type_t y):  return ~y
-cdef packed_type_t __f6(packed_type_t x, packed_type_t y):  return x^y      # XOR
-cdef packed_type_t __f7(packed_type_t x, packed_type_t y):  return ~(x&y)   # NAND
-cdef packed_type_t __f8(packed_type_t x, packed_type_t y):  return x&y      # AND
-cdef packed_type_t __f9(packed_type_t x, packed_type_t y):  return ~(x^y)   # XNOR
-cdef packed_type_t __f10(packed_type_t x, packed_type_t y): return y
-cdef packed_type_t __f11(packed_type_t x, packed_type_t y): return ~x|y
-cdef packed_type_t __f12(packed_type_t x, packed_type_t y): return x
-cdef packed_type_t __f13(packed_type_t x, packed_type_t y): return x|~y
-cdef packed_type_t __f14(packed_type_t x, packed_type_t y): return x|y      # OR
-cdef packed_type_t __f15(packed_type_t x, packed_type_t y): return 1
