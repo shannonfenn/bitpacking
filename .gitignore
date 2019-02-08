@@ -10,3 +10,5 @@ py*.cpp
 *.html
 *.pytest.restart
 *.sublime-workspace
+
+\.pytest_cache/
